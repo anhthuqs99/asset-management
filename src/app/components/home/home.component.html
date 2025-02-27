@@ -1,5 +1,5 @@
 <div class="container">
-  <div>
+  <div class="toolbar">
     <a [routerLink]="['/atm']">Add New ATM</a>
   </div>
   <div class="header">
@@ -7,6 +7,7 @@
     <p>Manufacturer</p>
     <p>Type</p>
     <p>Serial Number</p>
+    <p>Image</p>
     <p>Actions</p>
   </div>
   <ng-container *ngIf="loadedData; else loading">
