@@ -11,7 +11,13 @@ button,
 input {
   padding: 6px;
   font-size: 16px;
+}
+
+button {
   cursor: pointer;
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .loading-container {

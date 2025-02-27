@@ -28,15 +28,38 @@ export class AtmDetailComponent {
   public loadedData: boolean = false;
   public errorMessage: string = '';
   public successMessage: string = '';
+  public savingMessage: string = '';
 
   constructor(private atmService: AtmService, private route: ActivatedRoute) {
     this.initData().catch(console.error);
   }
 
-  public async addOrEditAtm() {}
+  public async addOrEditAtm() {
+    this.savingMessage = 'Saving...';
+    if (this.atm) {
+      await this.editAtm();
+    } else {
+      await this.addAtm();
+    }
+    this.savingMessage = '';
+  }
 
   public cancel() {
     window.history.back();
+  }
+
+  public isDataChanged() {
+    if (!this.atm) {
+      return false;
+    }
+
+    const atmData = this.atmForm.getRawValue() as AtmEditData;
+    return (
+      atmData.name !== this.atm.name ||
+      atmData.manufacturer !== this.atm.manufacturer ||
+      atmData.type !== this.atm.type ||
+      atmData.serial_number !== this.atm.serial_number
+    );
   }
 
   public async addAtm() {
@@ -53,6 +76,7 @@ export class AtmDetailComponent {
       } catch (error) {
         console.error(error);
         this.errorMessage = 'Something went wrong, cannot add atm';
+        this.savingMessage = '';
       }
     }
   }
@@ -65,6 +89,7 @@ export class AtmDetailComponent {
       } catch (error) {
         console.error(error);
         this.errorMessage = 'Something went wrong, cannot edit atm';
+        this.savingMessage = '';
       }
     }
   }

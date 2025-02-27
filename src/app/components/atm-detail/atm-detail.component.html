@@ -1,5 +1,5 @@
 <form *ngIf="loadedData; else loading" [formGroup]="atmForm" class="form">
-  <div class="image-placeholder">
+  <div *ngIf="atm?.image" class="image-placeholder">
     <img src="{{ atm?.image }}" alt="Image" loading="lazy" />
   </div>
   <label for="name">Name</label>
@@ -18,12 +18,20 @@
     formControlName="serial_number"
     placeholder="Input Serial Number"
   />
+  <div class="message">
+    <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
+    <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
+    <p *ngIf="savingMessage" class="success">{{ savingMessage }}</p>
+  </div>
   <div class="buttons">
-    <button [disabled]="atmForm.invalid" (click)="addOrEditAtm()">Save</button>
+    <button
+      [disabled]="atmForm.invalid || savingMessage || !isDataChanged()"
+      (click)="addOrEditAtm()"
+    >
+      Save
+    </button>
     <button (click)="cancel()">Cancel</button>
   </div>
-  <p *ngIf="errorMessage" class="error">{{ errorMessage }}</p>
-  <p *ngIf="successMessage" class="success">{{ successMessage }}</p>
 </form>
 
 <ng-template #loading>
