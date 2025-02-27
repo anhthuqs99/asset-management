@@ -7,6 +7,8 @@ import { Paging } from '../../logic/paging.logic';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { FormsModule } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 @Component({
   selector: 'app-home',
@@ -81,6 +83,22 @@ export class HomeComponent implements OnInit {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  exportToExcel() {
+    const worksheet = XLSX.utils.json_to_sheet(this.filteredAtms);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+
+    const excelBuffer: any = XLSX.write(workbook, {
+      bookType: 'xlsx',
+      type: 'array',
+    });
+    const data: Blob = new Blob([excelBuffer], {
+      type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    });
+
+    saveAs(data, 'data.xlsx');
   }
 
   private async initData() {
