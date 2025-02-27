@@ -3,6 +3,7 @@ import { AtmService } from '../../services/atm.service';
 import { Atm } from '../../model/atm.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Paging } from '../../logic/paging.logic';
 
 @Component({
   selector: 'app-home',
@@ -16,6 +17,7 @@ export class HomeComponent {
   public showConfirmationDeleteMessage: boolean = false;
   public atmToDelete: Atm | null = null;
   public loadedData: boolean = false;
+  public paging = new Paging();
   constructor(private atmService: AtmService) {
     this.initData().catch(console.error);
   }
@@ -47,7 +49,9 @@ export class HomeComponent {
 
   private async initData() {
     try {
-      const atms = await this.atmService.getAtms();
+      const atms = await this.atmService.getAtms(
+        this.paging.getPagingParameters()
+      );
       this.atms = atms;
       this.loadedData = true;
     } catch (error) {

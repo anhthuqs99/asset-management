@@ -13,8 +13,8 @@ export class AtmService {
     return firstValueFrom(this.apiService.get(`atm/${id}`));
   }
 
-  public getAtms(): Promise<Atm[]> {
-    return firstValueFrom(this.apiService.get('atm'));
+  public getAtms(parameters: object): Promise<Atm[]> {
+    return firstValueFrom(this.apiService.get('atm', parameters));
   }
 
   public editAtm(id: number, atm: AtmEditData): Promise<Atm> {

@@ -6,13 +6,16 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'https://67c05924b9d02a9f22495603.mockapi.io/api/';
+  private baseUrl = 'https://67c05924b9d02a9f22495603.mockapi.io/api';
 
   constructor(protected http: HttpClient) {}
 
   // GET request
-  get<T>(endpoint: string): Observable<T> {
-    return this.http.get<T>(`${this.baseUrl}/${endpoint}`);
+  get<T>(endpoint: string, options?: any): Observable<T> {
+    return this.http.get<T>(
+      `${this.baseUrl}/${endpoint}`,
+      options
+    ) as Observable<T>;
   }
 
   // POST request
