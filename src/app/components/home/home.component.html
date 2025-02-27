@@ -10,34 +10,50 @@
     <p>Actions</p>
   </div>
   <ng-container *ngIf="loadedData; else loading">
-    <div *ngFor="let atm of atms" class="body">
-      <p>{{ atm.name }}</p>
-      <p>{{ atm.manufacturer }}</p>
-      <p>{{ atm.type }}</p>
-      <p>{{ atm.serial_number }}</p>
-      <img src="{{ atm.image }}" alt="Image" loading="lazy" />
-      <div class="actions">
-        <a [routerLink]="['/atm', atm?.id]"><button>Edit</button></a>
-        <button (click)="showConfirmationDelete(atm)">Delete</button>
+    <div class="body">
+      <div
+        *ngFor="
+          let atm of atms
+            | paginate : { itemsPerPage: 10, currentPage: currentPage }
+        "
+        class="row"
+      >
+        <p>{{ atm.name }}</p>
+        <p>{{ atm.manufacturer }}</p>
+        <p>{{ atm.type }}</p>
+        <p>{{ atm.serial_number }}</p>
+        <img src="{{ atm.image }}" alt="Image" loading="lazy" />
+        <div class="actions">
+          <a [routerLink]="['/atm', atm?.id]"><button>Edit</button></a>
+          <button (click)="showConfirmationDelete(atm)">Delete</button>
+        </div>
       </div>
     </div>
+    <div class="pagination">
+      <pagination-controls
+        (pageChange)="currentPage = $event"
+        previousLabel="Previous"
+        nextLabel="Next"
+      ></pagination-controls>
+    </div>
   </ng-container>
-</div>
-<div class="modal" *ngIf="showConfirmationDeleteMessage">
-  <div class="modal-content">
-    <p>
-      Are you sure you want to delete
-      <strong>{{ atmToDelete?.name }}</strong> ATM?
-    </p>
-    <div class="buttons">
-      <button (click)="deleteAtm()">Yes</button>
-      <button (click)="hideConfirmationDelete()">No</button>
+
+  <div class="modal" *ngIf="showConfirmationDeleteMessage">
+    <div class="modal-content">
+      <p>
+        Are you sure you want to delete
+        <strong>{{ atmToDelete?.name }}</strong> ATM?
+      </p>
+      <div class="buttons">
+        <button (click)="deleteAtm()">Yes</button>
+        <button (click)="hideConfirmationDelete()">No</button>
+      </div>
     </div>
   </div>
-</div>
 
-<ng-template #loading>
-  <div class="loading-container">
-    <div class="loading">Loading...</div>
-  </div>
-</ng-template>
+  <ng-template #loading>
+    <div class="loading-container">
+      <div class="loading">Loading...</div>
+    </div>
+  </ng-template>
+</div>

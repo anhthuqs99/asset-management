@@ -3,7 +3,7 @@ export class Paging {
   private pageSize: number;
   private canLoadMore = true;
 
-  constructor(currentPage = 1, pageSize = 10) {
+  constructor(currentPage = 1, pageSize = 30) {
     this.currentPage = currentPage;
     this.pageSize = pageSize;
   }
