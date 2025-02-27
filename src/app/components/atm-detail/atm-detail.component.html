@@ -1,10 +1,13 @@
 <form *ngIf="loadedData; else loading" [formGroup]="atmForm" class="form">
+  <div class="image-placeholder">
+    <img src="{{ atm?.image }}" alt="Image" loading="lazy" />
+  </div>
   <label for="name">Name</label>
   <input type="text" formControlName="name" placeholder="Input Name" />
   <label for="manufactuner">Manufacturer</label>
   <input
     type="text"
-    formControlName="manufactuner"
+    formControlName="manufacturer"
     placeholder="Input Manufacturer"
   />
   <label for="type">Type</label>

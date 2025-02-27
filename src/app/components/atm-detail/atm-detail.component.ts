@@ -21,7 +21,7 @@ export class AtmDetailComponent {
   public atm: Atm | null = null;
   public atmForm = new FormGroup({
     name: new FormControl('', Validators.required),
-    manufactuner: new FormControl('', Validators.required),
+    manufacturer: new FormControl('', Validators.required),
     type: new FormControl('', Validators.required),
     serial_number: new FormControl('', Validators.required),
   });

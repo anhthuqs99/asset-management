@@ -12,11 +12,12 @@
   <ng-container *ngIf="loadedData; else loading">
     <div *ngFor="let atm of atms" class="body">
       <p>{{ atm.name }}</p>
-      <p>{{ atm.manufacturner }}</p>
+      <p>{{ atm.manufacturer }}</p>
       <p>{{ atm.type }}</p>
       <p>{{ atm.serial_number }}</p>
+      <img src="{{ atm.image }}" alt="Image" loading="lazy" />
       <div class="actions">
-        <button><a [routerLink]="['/atm', atm.id]">Edit</a></button>
+        <a [routerLink]="['/atm', atm?.id]"><button>Edit</button></a>
         <button (click)="showConfirmationDelete(atm)">Delete</button>
       </div>
     </div>
