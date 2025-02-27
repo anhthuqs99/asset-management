@@ -1,27 +1,61 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AtmService } from '../../services/atm.service';
 import { Atm } from '../../model/atm.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Paging } from '../../logic/paging.logic';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { FormsModule } from '@angular/forms';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, NgxPaginationModule],
+  imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit {
   public atms: Atm[] = [];
+  public filteredAtms: Atm[] = [];
+  public searchTerm: string = '';
   public showConfirmationDeleteMessage: boolean = false;
   public atmToDelete: Atm | null = null;
   public loadedData: boolean = false;
   public paging = new Paging();
   public currentPage: number = 1;
+
+  private searchSubject = new Subject<string>();
+  private destroy$ = new Subject<void>();
   constructor(private atmService: AtmService) {
     this.initData().catch(console.error);
+  }
+
+  ngOnInit() {
+    this.searchSubject
+      .pipe(debounceTime(300), takeUntil(this.destroy$))
+      .subscribe((searchTerm) => {
+        this.search(searchTerm);
+      });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
+  public onSearchTermChange(searchTerm: string) {
+    this.searchTerm = searchTerm;
+    this.searchSubject.next(searchTerm);
+  }
+
+  private search(searchTerm: string) {
+    this.filteredAtms = this.atms.filter(
+      (atm) =>
+        atm.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        atm.manufacturer.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        atm.type.toLowerCase().includes(searchTerm.toLowerCase())
+    );
   }
 
   public showConfirmationDelete(atm: Atm) {
@@ -52,6 +86,8 @@ export class HomeComponent {
   private async initData() {
     try {
       await this.getAtms();
+      this.filteredAtms = this.atms;
+      this.loadedData = true;
     } catch (error) {
       console.error(error);
     }
@@ -65,7 +101,6 @@ export class HomeComponent {
         );
         this.atms.push(...atmsData);
         this.paging.nextPage(atmsData.length);
-        this.loadedData = true;
         await this.getAtms();
       } catch (error) {
         console.error(error);
