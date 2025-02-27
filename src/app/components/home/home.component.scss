@@ -1,0 +1,62 @@
+.container {
+  .header,
+  .body {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+  }
+
+  .header {
+    background-color: grey;
+    justify-items: center;
+    padding: 10px;
+  }
+
+  .body {
+    padding: 10px;
+    border: 1px solid grey;
+    &:not(:last-child) {
+      border-bottom: none;
+    }
+    .actions {
+      display: flex;
+      gap: 5px;
+      justify-content: center;
+      button {
+        min-width: 65px;
+        a {
+          text-decoration: none;
+          color: black;
+        }
+      }
+    }
+  }
+}
+
+.modal {
+  position: fixed;
+  display: flex;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(1px);
+  .modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid grey;
+    .buttons {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      button {
+        min-width: 50px;
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+.header {
+  height: 110px;
+  padding: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  img {
+    height: 100%;
+    object-fit: contain;
+    padding-right: 20px;
+  }
+}

@@ -1,0 +1,42 @@
+<div class="container">
+  <div>
+    <a [routerLink]="['/atm']">Add New ATM</a>
+  </div>
+  <div class="header">
+    <p>Name</p>
+    <p>Manufacturer</p>
+    <p>Type</p>
+    <p>Serial Number</p>
+    <p>Actions</p>
+  </div>
+  <ng-container *ngIf="loadedData; else loading">
+    <div *ngFor="let atm of atms" class="body">
+      <p>{{ atm.name }}</p>
+      <p>{{ atm.manufacturner }}</p>
+      <p>{{ atm.type }}</p>
+      <p>{{ atm.serial_number }}</p>
+      <div class="actions">
+        <button><a [routerLink]="['/atm', atm.id]">Edit</a></button>
+        <button (click)="showConfirmationDelete(atm)">Delete</button>
+      </div>
+    </div>
+  </ng-container>
+</div>
+<div class="modal" *ngIf="showConfirmationDeleteMessage">
+  <div class="modal-content">
+    <p>
+      Are you sure you want to delete
+      <strong>{{ atmToDelete?.name }}</strong> ATM?
+    </p>
+    <div class="buttons">
+      <button (click)="deleteAtm()">Yes</button>
+      <button (click)="hideConfirmationDelete()">No</button>
+    </div>
+  </div>
+</div>
+
+<ng-template #loading>
+  <div class="loading-container">
+    <div class="loading">Loading...</div>
+  </div>
+</ng-template>
