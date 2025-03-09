@@ -78,6 +78,9 @@ export class HomeComponent implements OnInit {
 
       await this.atmService.deleteAtm(this.atmToDelete?.id);
       this.atms = this.atms.filter((atm) => atm.id !== this.atmToDelete?.id);
+      this.filteredAtms = this.filteredAtms.filter(
+        (atm) => atm.id !== this.atmToDelete?.id
+      );
       this.atmToDelete = null;
       this.showConfirmationDeleteMessage = false;
     } catch (error) {
