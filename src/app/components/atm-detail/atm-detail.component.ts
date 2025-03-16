@@ -11,11 +11,10 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-atm-detail',
-  standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
-  templateUrl: './atm-detail.component.html',
-  styleUrl: './atm-detail.component.scss',
+    selector: 'app-atm-detail',
+    imports: [ReactiveFormsModule, CommonModule],
+    templateUrl: './atm-detail.component.html',
+    styleUrl: './atm-detail.component.scss'
 })
 export class AtmDetailComponent {
   public atm: Atm | null = null;

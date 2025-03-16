@@ -11,11 +11,10 @@ import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 @Component({
-  selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
-  templateUrl: './home.component.html',
-  styleUrl: './home.component.scss',
+    selector: 'app-home',
+    imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
+    templateUrl: './home.component.html',
+    styleUrl: './home.component.scss'
 })
 export class HomeComponent implements OnInit {
   public atms: Atm[] = [];
