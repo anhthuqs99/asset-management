@@ -9,12 +9,13 @@ import { FormsModule } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { AtmStoreService } from '../../services/atm-store.service';
 
 @Component({
-    selector: 'app-home',
-    imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
-    templateUrl: './home.component.html',
-    styleUrl: './home.component.scss'
+  selector: 'app-home',
+  imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
+  templateUrl: './home.component.html',
+  styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   public atms: Atm[] = [];
@@ -28,11 +29,26 @@ export class HomeComponent implements OnInit {
 
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
-  constructor(private atmService: AtmService) {
-    this.initData().catch(console.error);
+  constructor(
+    private atmService: AtmService,
+    private atmStoreService: AtmStoreService
+  ) {
+    // this.initData().catch(console.error);
   }
 
   ngOnInit() {
+    this.atmStoreService.fetchAtms();
+    this.atmStoreService.getAtms().subscribe((atms) => {
+      this.atms = atms;
+      this.filteredAtms = atms;
+    });
+
+    this.atmStoreService.getSuccess().subscribe((success) => {
+      console.log('success', success);
+
+      this.loadedData = success;
+    });
+
     this.searchSubject
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((searchTerm) => {
@@ -103,28 +119,28 @@ export class HomeComponent implements OnInit {
     saveAs(data, 'data.xlsx');
   }
 
-  private async initData() {
-    try {
-      await this.getAtms();
-      this.filteredAtms = this.atms;
-      this.loadedData = true;
-    } catch (error) {
-      console.error(error);
-    }
-  }
+  // private async initData() {
+  //   try {
+  //     await this.getAtms();
+  //     this.filteredAtms = this.atms;
+  //     this.loadedData = true;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
 
-  private async getAtms() {
-    if (this.paging.getCanLoadMore()) {
-      try {
-        const atmsData = await this.atmService.getAtms(
-          this.paging.getPagingParameters()
-        );
-        this.atms.push(...atmsData);
-        this.paging.nextPage(atmsData.length);
-        await this.getAtms();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
+  // private async getAtms() {
+  //   if (this.paging.getCanLoadMore()) {
+  //     try {
+  //       const atmsData = await this.atmService.getAtms(
+  //         this.paging.getPagingParameters()
+  //       );
+  //       this.atms.push(...atmsData);
+  //       this.paging.nextPage(atmsData.length);
+  //       await this.getAtms();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // }
 }
