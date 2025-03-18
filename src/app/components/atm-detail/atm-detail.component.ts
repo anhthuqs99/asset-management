@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,14 +9,16 @@ import { AtmService } from '../../services/atm.service';
 import { Atm, AtmEditData } from '../../model/atm.model';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { AtmStoreService } from '../../services/atm-store.service';
 
 @Component({
-    selector: 'app-atm-detail',
-    imports: [ReactiveFormsModule, CommonModule],
-    templateUrl: './atm-detail.component.html',
-    styleUrl: './atm-detail.component.scss'
+  selector: 'app-atm-detail',
+  imports: [ReactiveFormsModule, CommonModule],
+  templateUrl: './atm-detail.component.html',
+  styleUrl: './atm-detail.component.scss',
 })
-export class AtmDetailComponent {
+export class AtmDetailComponent implements OnInit {
+  public atmID!: string;
   public atm: Atm | null = null;
   public atmForm = new FormGroup({
     name: new FormControl('', Validators.required),
@@ -28,19 +30,50 @@ export class AtmDetailComponent {
   public errorMessage: string = '';
   public successMessage: string = '';
   public savingMessage: string = '';
+  public isSavingData: boolean = false;
 
-  constructor(private atmService: AtmService, private route: ActivatedRoute) {
-    this.initData().catch(console.error);
+  constructor(
+    private atmService: AtmService,
+    private route: ActivatedRoute,
+    private atmStoreService: AtmStoreService
+  ) {
+    // this.initData().catch(console.error);
+  }
+
+  ngOnInit(): void {
+    this.atmID = this.route.snapshot.paramMap.get('id') ?? '';
+    this.atmStoreService.fetchAtm(this.atmID);
+    this.atmStoreService.getAtm().subscribe((atm) => {
+      this.atm = atm;
+      this.atmForm.patchValue(atm);
+    });
+    this.atmStoreService.getDetailSuccess().subscribe((success) => {
+      this.loadedData = success;
+    });
+    this.atmStoreService.getDetailLoading().subscribe((loading) => {
+      this.isSavingData = loading;
+    });
   }
 
   public async addOrEditAtm() {
-    this.savingMessage = 'Saving...';
-    if (this.atm) {
-      await this.editAtm();
-    } else {
-      await this.addAtm();
+    if (!this.atmForm.valid) {
+      return;
     }
-    this.savingMessage = '';
+
+    const atmData = this.atmForm.getRawValue() as AtmEditData;
+    if (this.atmID) {
+      this.atmStoreService.updateAtm(this.atmID, atmData);
+    } else {
+      this.atmStoreService.createAtm(atmData);
+    }
+
+    // this.savingMessage = 'Saving...';
+    // if (this.atm) {
+    //   await this.editAtm();
+    // } else {
+    //   await this.addAtm();
+    // }
+    // this.savingMessage = '';
   }
 
   public cancel() {
@@ -93,12 +126,12 @@ export class AtmDetailComponent {
     }
   }
 
-  private async initData() {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.atm = await this.atmService.getAtm(id);
-      this.atmForm.patchValue(this.atm);
-    }
-    this.loadedData = true;
-  }
+  // private async initData() {
+  //   const id = this.route.snapshot.paramMap.get('id');
+  //   if (id) {
+  //     this.atm = await this.atmService.getAtm(id);
+  //     this.atmForm.patchValue(this.atm);
+  //   }
+  //   this.loadedData = true;
+  // }
 }

@@ -44,8 +44,6 @@ export class HomeComponent implements OnInit {
     });
 
     this.atmStoreService.getSuccess().subscribe((success) => {
-      console.log('success', success);
-
       this.loadedData = success;
     });
 

@@ -23,7 +23,7 @@ export class AtmStoreService {
     return this.apiService.get('atm');
   }
 
-  public callUpdateAtm(id: number, atm: AtmEditData): Observable<Atm> {
+  public callUpdateAtm(id: string, atm: AtmEditData): Observable<Atm> {
     return this.apiService.put(`atm/${id}`, atm);
   }
 
@@ -54,5 +54,33 @@ export class AtmStoreService {
 
   public getSuccess(): Observable<boolean> {
     return this.store.select(AtmStore.selectAtmSuccess);
+  }
+
+  public createAtm(atm: AtmEditData) {
+    this.store.dispatch(new AtmStore.CreateAtm(atm));
+  }
+
+  public updateAtm(id: string, atm: AtmEditData) {
+    this.store.dispatch(new AtmStore.UpdateAtm({ id, atm }));
+  }
+
+  public deleteAtm(id: number) {
+    this.store.dispatch(new AtmStore.DeleteAtm(id));
+  }
+
+  public fetchAtm(id: string) {
+    this.store.dispatch(new AtmStore.LoadAtm(id));
+  }
+
+  public getAtm(): Observable<Atm> {
+    return this.store.select(AtmStore.selectAtm);
+  }
+
+  public getDetailLoading(): Observable<boolean> {
+    return this.store.select(AtmStore.selectAtmDetailLoading);
+  }
+
+  public getDetailSuccess(): Observable<boolean> {
+    return this.store.select(AtmStore.selectAtmDetailSuccess);
   }
 }
