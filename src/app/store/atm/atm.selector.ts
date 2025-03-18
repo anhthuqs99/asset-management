@@ -1,47 +1,44 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { AtmDetailState, AtmState } from './atm.states';
+import { AppState, AtmDetailState } from './atm.states';
 
 export const atmFeatureKey = 'atm';
 
-export const selectAtmState = createFeatureSelector<AtmState>(atmFeatureKey);
+export const selectAppState = createFeatureSelector<AppState>(atmFeatureKey);
 
 export const selectAllAtms = createSelector(
-  selectAtmState,
-  (state: AtmState) => state.atms
+  selectAppState,
+  (state: AppState) => state.atm.atms
 ); // get all atms
 export const selectAtmError = createSelector(
-  selectAtmState,
-  (state: AtmState) => state.error
+  selectAppState,
+  (state: AppState) => state.atm.error
 ); // get error
 export const selectAtmLoading = createSelector(
-  selectAtmState,
-  (state: AtmState) => state.loading
+  selectAppState,
+  (state: AppState) => state.atm.loading
 ); // get loading
 
 export const selectAtmSuccess = createSelector(
-  selectAtmState,
-  (state: AtmState) => state.success
+  selectAppState,
+  (state: AppState) => state.atm.success
 ); // get success
 
-export const selectAtmDetailState =
-  createFeatureSelector<AtmDetailState>(atmFeatureKey);
-
 export const selectAtm = createSelector(
-  selectAtmDetailState,
-  (state: AtmDetailState) => state.atm
+  selectAppState,
+  (state: AppState) => state.atmDetail.atm
 ); // get atm
 
 export const selectAtmDetailError = createSelector(
-  selectAtmDetailState,
-  (state: AtmDetailState) => state.error
+  selectAppState,
+  (state: AppState) => state.atmDetail.error
 ); // get error
 
 export const selectAtmDetailLoading = createSelector(
-  selectAtmDetailState,
-  (state: AtmDetailState) => state.loading
+  selectAppState,
+  (state: AppState) => state.atmDetail.loading
 ); // get loading
 
 export const selectAtmDetailSuccess = createSelector(
-  selectAtmDetailState,
-  (state: AtmDetailState) => state.success
+  selectAppState,
+  (state: AppState) => state.atmDetail.success
 ); // get success

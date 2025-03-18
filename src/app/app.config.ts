@@ -20,8 +20,7 @@ export const appConfig: ApplicationConfig = {
     provideEffects([AtmStore.AtmEffects]),
     importProvidersFrom(
       StoreModule.forRoot({}),
-      StoreModule.forFeature(AtmStore.atmFeatureKey, AtmStore.atmReducer),
-      StoreModule.forFeature(AtmStore.atmFeatureKey, AtmStore.atmDetailReducer)
+      StoreModule.forFeature(AtmStore.atmFeatureKey, AtmStore.reducer)
     ),
   ],
 };
