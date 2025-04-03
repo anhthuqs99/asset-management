@@ -10,10 +10,11 @@ import { Atm, AtmEditData } from '../../model/atm.model';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AtmStoreService } from '../../services/atm-store.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-atm-detail',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, TranslatePipe],
   templateUrl: './atm-detail.component.html',
   styleUrl: './atm-detail.component.scss',
 })

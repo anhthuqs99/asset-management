@@ -1,0 +1,23 @@
+{
+  "appTitle": "Hệ thống Quản lý ATM",
+  "home": {
+    "addATM": "Thêm ATM mới",
+    "language": "Ngôn ngữ: ",
+    "name": "Tên",
+    "manufacturer": "Nhà sản xuất",
+    "type": "Loại",
+    "serialNumber": "Số sê-ri",
+    "image": "Hình ảnh",
+    "actions": "Hành động",
+    "edit": "Chỉnh sửa",
+    "delete": "Xóa",
+    "save": "Lưu",
+    "cancel": "Hủy",
+    "exportData": "Xuất dữ liệu",
+    "deleteConfirmation": "Bạn có chắc chắn muốn xóa ATM này không?",
+    "yes": "Có",
+    "no": "Không",
+    "loading": "Đang tải...",
+    "noData": "Không tìm thấy kết quả"
+  }
+}

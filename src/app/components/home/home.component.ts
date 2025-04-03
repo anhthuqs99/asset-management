@@ -10,10 +10,18 @@ import { debounceTime, Subject, takeUntil } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { AtmStoreService } from '../../services/atm-store.service';
+import { LanguageCode, languageKey, LanguageOptions } from '../../constant';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
-  imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgxPaginationModule,
+    FormsModule,
+    TranslatePipe,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -27,13 +35,19 @@ export class HomeComponent implements OnInit {
   public paging = new Paging();
   public currentPage: number = 1;
 
+  // Language selection
+  public languageOptions = LanguageOptions;
+  public selectedLanguage = this.languageOptions[0].code;
+
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
   constructor(
     private atmService: AtmService,
-    private atmStoreService: AtmStoreService
+    private atmStoreService: AtmStoreService,
+    private translateService: TranslateService
   ) {
     // this.initData().catch(console.error);
+    this.selectedLanguage = this.translateService.currentLang as LanguageCode;
   }
 
   ngOnInit() {
@@ -115,6 +129,12 @@ export class HomeComponent implements OnInit {
     });
 
     saveAs(data, 'data.xlsx');
+  }
+
+  public onLanguageChange(languageCode: LanguageCode) {
+    this.selectedLanguage = languageCode;
+    this.translateService.use(languageCode);
+    localStorage.setItem(languageKey, languageCode);
   }
 
   // private async initData() {
