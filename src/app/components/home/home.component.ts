@@ -9,11 +9,19 @@ import { FormsModule } from '@angular/forms';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { AtmStoreService } from '../../services/atm-store.service';
+import { LanguageCode, languageKey, LanguageOptions } from '../../constant';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
-  imports: [CommonModule, RouterModule, NgxPaginationModule, FormsModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    NgxPaginationModule,
+    FormsModule,
+    TranslatePipe,
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
@@ -27,13 +35,32 @@ export class HomeComponent implements OnInit {
   public paging = new Paging();
   public currentPage: number = 1;
 
+  // Language selection
+  public languageOptions = LanguageOptions;
+  public selectedLanguage = this.languageOptions[0].code;
+
   private searchSubject = new Subject<string>();
   private destroy$ = new Subject<void>();
-  constructor(private atmService: AtmService) {
-    this.initData().catch(console.error);
+  constructor(
+    private atmService: AtmService,
+    private atmStoreService: AtmStoreService,
+    private translateService: TranslateService
+  ) {
+    // this.initData().catch(console.error);
+    this.selectedLanguage = this.translateService.currentLang as LanguageCode;
   }
 
   ngOnInit() {
+    this.atmStoreService.fetchAtms();
+    this.atmStoreService.getAtms().subscribe((atms) => {
+      this.atms = atms;
+      this.filteredAtms = atms;
+    });
+
+    this.atmStoreService.getSuccess().subscribe((success) => {
+      this.loadedData = success;
+    });
+
     this.searchSubject
       .pipe(debounceTime(300), takeUntil(this.destroy$))
       .subscribe((searchTerm) => {
@@ -78,6 +105,9 @@ export class HomeComponent implements OnInit {
 
       await this.atmService.deleteAtm(this.atmToDelete?.id);
       this.atms = this.atms.filter((atm) => atm.id !== this.atmToDelete?.id);
+      this.filteredAtms = this.filteredAtms.filter(
+        (atm) => atm.id !== this.atmToDelete?.id
+      );
       this.atmToDelete = null;
       this.showConfirmationDeleteMessage = false;
     } catch (error) {
@@ -101,28 +131,34 @@ export class HomeComponent implements OnInit {
     saveAs(data, 'data.xlsx');
   }
 
-  private async initData() {
-    try {
-      await this.getAtms();
-      this.filteredAtms = this.atms;
-      this.loadedData = true;
-    } catch (error) {
-      console.error(error);
-    }
+  public onLanguageChange(languageCode: LanguageCode) {
+    this.selectedLanguage = languageCode;
+    this.translateService.use(languageCode);
+    localStorage.setItem(languageKey, languageCode);
   }
 
-  private async getAtms() {
-    if (this.paging.getCanLoadMore()) {
-      try {
-        const atmsData = await this.atmService.getAtms(
-          this.paging.getPagingParameters()
-        );
-        this.atms.push(...atmsData);
-        this.paging.nextPage(atmsData.length);
-        await this.getAtms();
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  }
+  // private async initData() {
+  //   try {
+  //     await this.getAtms();
+  //     this.filteredAtms = this.atms;
+  //     this.loadedData = true;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }
+
+  // private async getAtms() {
+  //   if (this.paging.getCanLoadMore()) {
+  //     try {
+  //       const atmsData = await this.atmService.getAtms(
+  //         this.paging.getPagingParameters()
+  //       );
+  //       this.atms.push(...atmsData);
+  //       this.paging.nextPage(atmsData.length);
+  //       await this.getAtms();
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   }
+  // }
 }
